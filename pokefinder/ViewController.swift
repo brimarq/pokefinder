@@ -119,10 +119,17 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         showSightingsOnMap(location: loc)
     }
     
-    // Show on AppleMaps when a Pokemon is tapped, the callout appears, and user presses the button 
+    // Show on AppleMaps when a Pokemon is tapped, the callout appears, and user presses the button
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         if let  anno = view.annotation as? PokeAnnotation {
-            let place = MKPlacemark(coordinate: anno.coordinate)
+            
+            var place: MKPlacemark!
+            if #available(iOS 10.0, *) {
+                place = MKPlacemark(coordinate: anno.coordinate)
+            } else {
+                place = MKPlacemark(coordinate: anno.coordinate, addressDictionary: nil)
+            }
+            
             let destination = MKMapItem(placemark: place)
             destination.name = "Pokemon Sighting"
             let regionDistance: CLLocationDistance = 1000
